@@ -321,9 +321,9 @@ void OpenGLRenderInterface::applyMaterial(const struct aiMaterial *mtl)
 
     max = 1;
     if((AI_SUCCESS == aiGetMaterialIntegerArray(mtl, AI_MATKEY_TWOSIDED, &two_sided, &max)) && two_sided)
-        glEnable(GL_CULL_FACE);
-    else
         glDisable(GL_CULL_FACE);
+    else
+        glEnable(GL_CULL_FACE);
 }
 
 

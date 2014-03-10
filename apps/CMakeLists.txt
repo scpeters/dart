@@ -23,6 +23,7 @@ foreach(APPDIR
     #holding
     harnessTest
     vehicle
+    mekaRobot
 
     softArticulatedBodiesTest
     softCubes
