@@ -64,6 +64,36 @@ public:
   virtual Eigen::VectorXd evalDeriv() = 0;
 };
 
+/// \brief Any class that uses an integrator should implement this interface.
+template<typename Config, typename Deriv>
+class IntegrableSystem2
+{
+public:
+  /// \brief Default constructor.
+  IntegrableSystem2() {}
+
+  /// \brief Default destructor.
+  virtual ~IntegrableSystem2() {}
+
+public:
+  virtual Config getPosition() const = 0;
+  virtual Deriv getVelocity() const = 0;
+
+  virtual void setPosition(const Config& _state) = 0;
+  virtual void setVelocity(const Deriv& _state) = 0;
+
+  virtual void integratePosition(const Deriv& _vel, double _dt) = 0;
+  virtual void integrateVelocity(const Deriv& _acc, double _dt) = 0;
+
+  virtual void integratePosition(const Config& _config,
+                                 const Deriv& _acc, double _dt) = 0;
+  virtual void integrateVelocity(const Deriv& _vel,
+                                 const Deriv& _acc, double _dt) = 0;
+
+  virtual Deriv evalAcceleration() = 0;
+  virtual void evalAccelerationVoid() = 0;
+};
+
 // TODO(kasiu): Consider templating the class (which currently only works on
 // arbitrarily-sized vectors of doubles)
 /// \brief
@@ -78,6 +108,23 @@ public:
 public:
   /// \brief Integrate the system with time step dt.
   virtual void integrate(IntegrableSystem* system, double dt) const = 0;
+};
+
+/// \brief
+template<typename Config, typename Deriv>
+class Integrator2
+{
+public:
+  /// \brief Constructor
+  Integrator2() {}
+
+  /// \brief Destructor
+  virtual ~Integrator2() {}
+
+public:
+  /// \brief Integrate the system with time step dt
+  virtual void integrate(IntegrableSystem2<Config, Deriv>* system,
+                         double dt) const = 0;
 };
 
 }  // namespace integration

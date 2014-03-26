@@ -55,6 +55,28 @@ public:
   virtual void integrate(IntegrableSystem* _system, double _dt) const;
 };
 
+/// \brief
+template<typename Config, typename Deriv>
+class EulerIntegrator2 : public Integrator2<Config, Deriv>
+{
+public:
+  /// \brief Default constructor.
+  EulerIntegrator2() : Integrator2<Config, Deriv>() {}
+
+  /// \brief Default destructor.
+  virtual ~EulerIntegrator2() {}
+
+  // Documentation inherited.
+  virtual void integrate(IntegrableSystem2<Config, Deriv>* _system,
+                         double _dt) const
+  {
+    Eigen::VectorXd deriv = _system->evalDeriv();
+    _system->setState(_system->getState() + (_dt * deriv));
+
+    _system->setVelocity(_system->evalAcceleration(), _dt);
+  }
+};
+
 }  // namespace integration
 }  // namespace dart
 
