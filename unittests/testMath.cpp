@@ -1161,6 +1161,58 @@ TEST(MATH, UTILS) {
     << "result = " << result << " expected = " << expected;
 }
 
+//==============================================================================
+template<typename Derived>
+typename Derived::PlainObject AdTJac2(const Eigen::Isometry3d& _T,
+                                      const Eigen::MatrixBase<Derived>& _J)
+{
+//  EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived);
+//  EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime == 6,
+//                      THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE);
+  assert(_J.rows() == 6);
+
+  typename Derived::PlainObject ret;
+
+
+  std::cout << "_J size :" << _J.rows() << ", " << _J.cols() << std::endl;
+  std::cout << "ret size:" << ret.rows() << ", " << ret.cols() << std::endl;
+
+  for (int i = 0; i < _J.cols(); ++i)
+    ret.template leftCols<1>() = AdT(_T, _J.template leftCols<1>());
+//    ret.template block<6, 1>(0, i) = AdT(_T, _J.template block<6, 1>(0, i));
+  return ret;
+}
+
+//==============================================================================
+TEST(MATH, AdTJac)
+{
+  int testCount = 100000;
+  int m = 1000;
+
+  Vector6d t = Vector6d::Random();
+  Isometry3d T = expMap(t);
+  Jacobian dynamicJ              = Jacobian::Random(6, m);
+  Matrix<double, 6, 1000> fixedJ = Matrix<double, 6, 1000>::Random();
+
+//  EXPECT_TRUE(equals(AdTJac(T, dynamicJ), AdTJac2(T, fixedJ)));
+
+  Timer t1("1");
+  t1.start();
+  for (int i = 0; i < testCount; ++i)
+  {
+    Jacobian resJ1 = AdTJac(T, dynamicJ);
+  }
+  t1.stop();
+
+  Timer t2("2");
+  t2.start();
+  for (int i = 0; i < testCount; ++i)
+  {
+    Matrix<double, 6, 1000> resJ2 = AdTJac2(T, fixedJ);
+  }
+  t2.stop();
+}
+
 /******************************************************************************/
 int main(int argc, char* argv[])
 {
