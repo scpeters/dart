@@ -38,6 +38,7 @@
 #include <gtest/gtest.h>
 #include "TestHelpers.h"
 
+#include "dart/config.h"
 #include "dart/common/Timer.h"
 #include "dart/math/Geometry.h"
 #include "dart/math/Helpers.h"
@@ -1173,20 +1174,23 @@ typename Derived::PlainObject AdTJac2(const Eigen::Isometry3d& _T,
 
   typename Derived::PlainObject ret;
 
-
-  std::cout << "_J size :" << _J.rows() << ", " << _J.cols() << std::endl;
-  std::cout << "ret size:" << ret.rows() << ", " << ret.cols() << std::endl;
+//  std::cout << "_J size :" << _J.rows() << ", " << _J.cols() << std::endl;
+//  std::cout << "ret size:" << ret.rows() << ", " << ret.cols() << std::endl;
 
   for (int i = 0; i < _J.cols(); ++i)
-    ret.template leftCols<1>() = AdT(_T, _J.template leftCols<1>());
-//    ret.template block<6, 1>(0, i) = AdT(_T, _J.template block<6, 1>(0, i));
+    ret.col(i) = AdT(_T, _J.col(i));
+
   return ret;
 }
 
 //==============================================================================
 TEST(MATH, AdTJac)
 {
+#ifdef BUILD_TYPE_RELEASE
   int testCount = 100000;
+#else
+  int testCount = 100;
+#endif
   int m = 1000;
 
   Vector6d t = Vector6d::Random();
@@ -1196,7 +1200,7 @@ TEST(MATH, AdTJac)
 
 //  EXPECT_TRUE(equals(AdTJac(T, dynamicJ), AdTJac2(T, fixedJ)));
 
-  Timer t1("1");
+  Timer t1("AdTJac");
   t1.start();
   for (int i = 0; i < testCount; ++i)
   {
@@ -1204,7 +1208,7 @@ TEST(MATH, AdTJac)
   }
   t1.stop();
 
-  Timer t2("2");
+  Timer t2("AdTJac2");
   t2.start();
   for (int i = 0; i < testCount; ++i)
   {
