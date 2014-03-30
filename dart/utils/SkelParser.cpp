@@ -274,6 +274,8 @@ dynamics::Skeleton* SkelParser::readSkeleton(
        skelBodyNodes.begin(); it != skelBodyNodes.end(); ++it)
     newSkeleton->addBodyNode((*it).bodyNode);
 
+  newSkeleton->init();
+
   return newSkeleton;
 }
 

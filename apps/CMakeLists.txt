@@ -33,6 +33,7 @@ foreach(APPDIR
     softSinglePendulumTest
     vehicle
     #viewer
+    legIK
     )
     add_subdirectory(${APPDIR})
     if(WIN32)
