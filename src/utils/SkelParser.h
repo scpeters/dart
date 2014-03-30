@@ -80,6 +80,9 @@ public:
     /// @brief
     static simulation::World* readSkelFile(const std::string& _filename);
 
+    /// @brief
+    static dynamics::Skeleton* readSkeleton(const std::string& _filename);
+
 private:
     struct SkelBodyNode
     {
@@ -93,8 +96,7 @@ private:
 
     /// @brief
     static dynamics::Skeleton* readSkeleton(
-            tinyxml2::XMLElement* _skeletonElement,
-            simulation::World* _world);
+            tinyxml2::XMLElement* _skeletonElement);
 
     /// @brief
     static SkelBodyNode readBodyNode(

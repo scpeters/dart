@@ -7,6 +7,7 @@ foreach(APPDIR
         tinkertoy
         rigidBodies
         fluid
+        skelTest
 	)
     add_subdirectory(${APPDIR})
     if(WIN32)
