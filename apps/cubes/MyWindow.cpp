@@ -53,7 +53,7 @@ MyWindow::~MyWindow() {
 }
 
 void MyWindow::timeStepping() {
-//  mWorld->getSkeleton(1)->getBodyNode(0)->addExtForce(mForce);
+  mWorld->getSkeleton(1)->getBodyNode(0)->addExtForce(mForce);
   mWorld->step();
   mForce /= 2.0;
 }
