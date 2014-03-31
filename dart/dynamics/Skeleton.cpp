@@ -923,6 +923,13 @@ void Skeleton::computeImpulseForwardDynamics()
   //DEBUG_CODE//////////////////////////////////////////////////////////////////
 //  dtdbg << "Velocity change: " << getVelsChange().transpose() << std::endl;
   //////////////////////////////////////////////////////////////////////////////
+
+  // TODO(JS): These code should be in here?
+  for (std::vector<BodyNode*>::iterator it = mBodyNodes.begin();
+       it != mBodyNodes.end(); ++it)
+  {
+    (*it);
+  }
 }
 
 void Skeleton::setInternalForceVector(const Eigen::VectorXd& _forces) {

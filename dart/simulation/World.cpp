@@ -307,16 +307,32 @@ double World::getTimeStep() const {
 //==============================================================================
 void World::step()
 {
-  mIntegrator->integrate(this, mTimeStep);
+  // Integrate velocity unconstrained skeletons
+  mIntegrator->integrateVel(this, mTimeStep);
 
-  // Detect active constraints and compute constraint impulses.
+  // Detect active constraints and compute constraint impulses
   mConstraintSolver->solve();
+
+  // Integrate skeletons with constraint impulses
+//  mIntegrator->integrate(this, mTimeStep);
+
+  // Compute velocity changes given constraint impulses
+//  for (std::vector<dynamics::Skeleton*>::iterator it = mSkeletons.begin();
+//       it != mSkeletons.end(); ++it)
+//  {
+//    if ((*it)->isImpulseApplied())
+//    {
+//      (*it)->computeImpulseForwardDynamics();
+//      (*it)->setImpulseApplied(false);
+//    }
+//  }
 
   for (std::vector<dynamics::Skeleton*>::iterator itr = mSkeletons.begin();
        itr != mSkeletons.end(); ++itr)
   {
     (*itr)->clearInternalForces();
     (*itr)->clearExternalForces();
+    (*itr)->clearConstraintImpulses();
   }
 
   mTime += mTimeStep;

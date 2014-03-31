@@ -86,9 +86,8 @@ void ConstrainedGroup::removeConstraint(Constraint* _constraint)
 //==============================================================================
 void ConstrainedGroup::removeAllConstraints()
 {
-  std::cout << "CommunityTEST::removeAllContraints(): "
-            << "Not implemented."
-            << std::endl;
+//  dtwarn << "ConstrainedGroup::removeAllConstraints(): "
+//         << "Not implemented." << std::endl;
 
   // TODO(JS): Temporary implementation
 //  for (int i = 0; i < mConstraints.size(); ++i)
@@ -115,15 +114,15 @@ bool ConstrainedGroup::solve()
   _fillLCPTermsODE(&lcp);
 
   //////////////////////////////////////////////////////////////////////////////
-  dtmsg << "Before solve" << std::endl;
-  lcp.print();
+//  dtmsg << "Before solve" << std::endl;
+//  lcp.print();
   //////////////////////////////////////////////////////////////////////////////
 
   // Solve LCP
   bool result = _solveODE(&lcp);
 
-  dtmsg << "After solve" << std::endl;
-  lcp.print();
+//  dtmsg << "After solve" << std::endl;
+//  lcp.print();
 
   // Apply impulse
   _applyODE(&lcp);
@@ -134,8 +133,8 @@ bool ConstrainedGroup::solve()
 //==============================================================================
 bool ConstrainedGroup::_containConstraint(Constraint* _constraint) const
 {
-  std::cout << "CommunityTEST::_containConstraint(): Not implemented."
-            << std::endl;
+//  std::cout << "CommunityTEST::_containConstraint(): Not implemented."
+//            << std::endl;
 
   return false;
 }

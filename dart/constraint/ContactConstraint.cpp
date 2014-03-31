@@ -230,9 +230,9 @@ void ContactConstraint::preprocess()
 //==============================================================================
 void ContactConstraint::update()
 {
-  std::cout << "ContactConstraintTEST::update(): "
-            << "Not implemented."
-            << std::endl;
+//  std::cout << "ContactConstraintTEST::update(): "
+//            << "Not implemented."
+//            << std::endl;
 }
 
 //==============================================================================
@@ -452,9 +452,9 @@ void ContactConstraint::_getRelVelocity(double* _relVel, int _idx)
 //==============================================================================
 bool ContactConstraint::isActive()
 {
-  std::cout << "ContactConstraintTEST::isActive(): "
-            << "Not implemented."
-            << std::endl;
+//  std::cout << "ContactConstraintTEST::isActive(): "
+//            << "Not implemented."
+//            << std::endl;
 
   return true;
 }

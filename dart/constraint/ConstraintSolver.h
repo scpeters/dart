@@ -128,7 +128,7 @@ public:
   //----------------------------------------------------------------------------
   // Solving
   //----------------------------------------------------------------------------
-  /// \brief Solve
+  /// \brief Solve constraint impulses and apply them to the skeletons
   virtual void solve();
 
 protected:

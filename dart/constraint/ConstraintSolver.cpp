@@ -318,9 +318,9 @@ void ConstraintSolver::_bakeConstraints()
 //==============================================================================
 void ConstraintSolver::__bakeContactConstraints()
 {
-  dtdbg << "ConstraintSolver::__bakeContactConstraints(): "
-        << "Not implemented yet."
-        << std::endl;
+//  dtdbg << "ConstraintSolver::__bakeContactConstraints(): "
+//        << "Not implemented yet."
+//        << std::endl;
 
   // Reset backed contact constraints
   for (std::vector<ContactConstraint*>::iterator it
@@ -343,25 +343,25 @@ void ConstraintSolver::__bakeContactConstraints()
 //==============================================================================
 void ConstraintSolver::__bakeJointLimitConstraints()
 {
-  std::cout << "ConstraintSolver::__bakeJointLimitConstraints(): "
-            << "Not implemented yet."
-            << std::endl;
+//  std::cout << "ConstraintSolver::__bakeJointLimitConstraints(): "
+//            << "Not implemented yet."
+//            << std::endl;
 }
 
 //==============================================================================
 void ConstraintSolver::__bakeClosedLoopConstraints()
 {
-  std::cout << "ConstraintSolver::__bakeClosedLoopConstraints(): "
-            << "Not implemented yet."
-            << std::endl;
+//  std::cout << "ConstraintSolver::__bakeClosedLoopConstraints(): "
+//            << "Not implemented yet."
+//            << std::endl;
 }
 
 //==============================================================================
 void ConstraintSolver::__bakeJointConstraints()
 {
-  std::cout << "ConstraintSolver::__bakeJointConstraints(): "
-            << "Not implemented yet."
-            << std::endl;
+//  std::cout << "ConstraintSolver::__bakeJointConstraints(): "
+//            << "Not implemented yet."
+//            << std::endl;
 }
 
 //==============================================================================
@@ -479,9 +479,6 @@ void ConstraintSolver::_updateDynamicConstraints()
 //==============================================================================
 void ConstraintSolver::_buildConstrainedGroups()
 {
-  std::cout << "ConstraintSolver::_buildConstrainedGroups(): Not implemented."
-            << std::endl;
-
   // TODO(JS):
   mConstrainedGroups[0]->removeAllConstraints();
 
