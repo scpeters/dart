@@ -94,7 +94,6 @@ BodyNode::BodyNode(const std::string& _name)
     mIsBodyJacobianDirty(true),
     mIsBodyJacobianTimeDerivDirty(true),
     mDelV(Eigen::Vector6d::Zero()),
-    mImpFext(Eigen::Vector6d::Zero()),
     mImpB(Eigen::Vector6d::Zero()),
     mImpAlpha(Eigen::Vector6d::Zero()),
     mImpBeta(Eigen::Vector6d::Zero()),
@@ -979,7 +978,7 @@ bool BodyNode::isImpulseReponsible() const
   // Should be called at BodyNode::init()
   // TODO(JS): Once hybrid dynamics is implemented, we should consider joint
   //           type of parent joint.
-  if (mParentJoint->getNumGenCoords() > 0)
+  if (mSkeleton->isMobile() && getNumDependentGenCoords() > 0)
     return true;
   else
     return false;
@@ -989,7 +988,7 @@ bool BodyNode::isImpulseReponsible() const
 void BodyNode::updateImpBiasForce()
 {
   // Update impulsive bias force
-  mImpB = -mConstraintImpulse - mImpFext;
+  mImpB = -mConstraintImpulse;
 //  assert(mImpFext == Eigen::Vector6d::Zero());
 
   for (std::vector<BodyNode*>::const_iterator it = mChildBodyNodes.begin();
