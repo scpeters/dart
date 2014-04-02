@@ -343,7 +343,7 @@ void ContactConstraint::applyUnitImpulse(int _idx)
 }
 
 //==============================================================================
-void ContactConstraint::getDelVelocity(double* _delVel, int _idx)
+void ContactConstraint::getVelocityChange(double* _delVel, int _idx)
 {
   assert(_delVel != NULL && "Null pointer is not allowed.");
 
@@ -425,8 +425,11 @@ void ContactConstraint::applyConstraintImpulse(double* _lambda, int _idx)
     {
       // Normal impulsive force
 //			pContactPts[i]->lambda[0] = _lambda[i];
-      mBodyNode1->addConstraintImpulse(mJacobians1[i] * _lambda[_idx]);
-      mBodyNode2->addConstraintImpulse(mJacobians2[i] * _lambda[_idx]);
+      if (mBodyNode1->isImpulseReponsible())
+        mBodyNode1->addConstraintImpulse(mJacobians1[i] * _lambda[_idx]);
+
+      if (mBodyNode2->isImpulseReponsible())
+        mBodyNode2->addConstraintImpulse(mJacobians2[i] * _lambda[_idx]);
       _idx++;
     }
   }

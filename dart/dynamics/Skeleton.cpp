@@ -924,12 +924,30 @@ void Skeleton::computeImpulseForwardDynamics()
 //  dtdbg << "Velocity change: " << getVelsChange().transpose() << std::endl;
   //////////////////////////////////////////////////////////////////////////////
 
-  // TODO(JS): These code should be in here?
-  for (std::vector<BodyNode*>::iterator it = mBodyNodes.begin();
-       it != mBodyNodes.end(); ++it)
-  {
-    (*it);
-  }
+
+  // 1. dq = dq + del_dq
+  // 2. ddq = ddq + del_dq / dt
+  // 3. tau = tau + imp / dt
+
+//  dtdbg << "getGenVelsgetGenVels: " << getGenVels().transpose() << std::endl;
+
+  GenCoordSystem::setGenVels(GenCoordSystem::getGenVels()
+                             + GenCoordSystem::getVelsChange());
+
+  dtdbg << "getGenVelsgetGenVels: " << getGenVels().transpose() << std::endl;
+
+//  GenCoordSystem::setGenAccs(GenCoordSystem::getGenAccs()
+//                             + GenCoordSystem::getVelsChange() / mTimeStep);
+
+//  GenCoordSystem::setGenForces(
+//        GenCoordSystem::getGenForces()
+//        + GenCoordSystem::getConstraintImpulses() / mTimeStep);
+
+  // 4. F = F + impF / dt
+
+  // Integration
+//  integrateConfigs(mTimeStep);
+//  computeForwardKinematics(false, true, false);
 }
 
 void Skeleton::setInternalForceVector(const Eigen::VectorXd& _forces) {

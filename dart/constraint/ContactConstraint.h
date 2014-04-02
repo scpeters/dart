@@ -91,7 +91,7 @@ public:
   virtual void applyUnitImpulse(int _idx);
 
   // Documentaion inherited.
-  virtual void getDelVelocity(double* _delVel, int _idx);
+  virtual void getVelocityChange(double* _delVel, int _idx);
 
   // Documentaion inherited.
   virtual void excite();

@@ -60,6 +60,13 @@ void SemiImplicitEulerIntegrator::integrate(IntegrableSystem* _system,
 }
 
 //==============================================================================
+void SemiImplicitEulerIntegrator::integratePos(IntegrableSystem* _system,
+                                               double _dt)
+{
+  _system->integrateConfigs(_system->getGenVels(), _dt);
+}
+
+//==============================================================================
 void SemiImplicitEulerIntegrator::integrateVel(IntegrableSystem* _system,
                                                double _dt)
 {

@@ -183,7 +183,7 @@ void ConstrainedGroup::_fillLCPTermsODE(ODELcp* _lcp)
       for (int k = i; k < mConstraints.size(); ++k)
       {
         int index = _lcp->nSkip * (offsetIndex[i] + j) + offsetIndex[k];
-        mConstraints[k]->getDelVelocity(_lcp->A, index);
+        mConstraints[k]->getVelocityChange(_lcp->A, index);
       }
 
       // Filling symmetric part of A matrix

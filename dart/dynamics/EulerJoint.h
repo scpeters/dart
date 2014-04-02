@@ -68,6 +68,8 @@ public:
   /// \brief
   AxisOrder getAxisOrder() const;
 
+  Eigen::Isometry3d getTransform(size_t _index) const;
+
   // Documentation inherited.
   virtual void updateTransform();
 

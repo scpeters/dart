@@ -97,6 +97,9 @@ public:
   virtual void integrate(IntegrableSystem* _system, double _dt) = 0;
 
   /// \brief Integrate velocity of the system with time step dt
+  virtual void integratePos(IntegrableSystem* _system, double _dt) {}
+
+  /// \brief Integrate velocity of the system with time step dt
   virtual void integrateVel(IntegrableSystem* _system, double _dt) {}
 };
 

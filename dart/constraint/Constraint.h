@@ -119,7 +119,7 @@ public:
   virtual void applyUnitImpulse(int _idx) = 0;
 
   /// \brief
-  virtual void getDelVelocity(double* _delVel, int _idx) = 0;
+  virtual void getVelocityChange(double* _delVel, int _idx) = 0;
 
   /// \brief
   virtual void excite() {}

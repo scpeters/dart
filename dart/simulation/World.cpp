@@ -317,15 +317,18 @@ void World::step()
 //  mIntegrator->integrate(this, mTimeStep);
 
   // Compute velocity changes given constraint impulses
-//  for (std::vector<dynamics::Skeleton*>::iterator it = mSkeletons.begin();
-//       it != mSkeletons.end(); ++it)
-//  {
-//    if ((*it)->isImpulseApplied())
-//    {
-//      (*it)->computeImpulseForwardDynamics();
-//      (*it)->setImpulseApplied(false);
-//    }
-//  }
+  for (std::vector<dynamics::Skeleton*>::iterator it = mSkeletons.begin();
+       it != mSkeletons.end(); ++it)
+  {
+    if ((*it)->isImpulseApplied())
+    {
+      (*it)->computeImpulseForwardDynamics();
+//      (*it)->updateForwardKinematicsWithVelocityChanges();
+      (*it)->setImpulseApplied(false);
+    }
+  }
+
+  mIntegrator->integratePos(this, mTimeStep);
 
   for (std::vector<dynamics::Skeleton*>::iterator itr = mSkeletons.begin();
        itr != mSkeletons.end(); ++itr)
