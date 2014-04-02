@@ -72,6 +72,9 @@ public:
   virtual void updateTransform();
 
   // Documentation inherited.
+  virtual Eigen::Matrix4d getLocalTransformDeriv(int _index) const;
+
+  // Documentation inherited.
   virtual void updateJacobian();
 
   // Documentation inherited.

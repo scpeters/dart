@@ -98,6 +98,79 @@ void EulerJoint::updateTransform() {
   assert(math::verifyTransform(mT));
 }
 
+Eigen::Matrix4d EulerJoint::getLocalTransformDeriv(int _index) const
+{
+  assert(0 <= _index && _index < 3);
+
+  double q0 = mCoordinate[0].getConfig();
+  double q1 = mCoordinate[1].getConfig();
+  double q2 = mCoordinate[2].getConfig();
+
+  Eigen::Matrix4d ret = Eigen::Matrix4d::Zero();
+
+  switch (mAxisOrder)
+  {
+  case AO_XYZ:
+  {
+      switch (_index)
+      {
+      case 0:
+          ret.topLeftCorner<3, 3>() = math::eulerToMatrixXDeriv(q0)
+                                      * math::eulerToMatrixY(q1)
+                                      * math::eulerToMatrixZ(q2);
+          break;
+      case 1:
+          ret.topLeftCorner<3, 3>() = math::eulerToMatrixX(q0)
+                                      * math::eulerToMatrixYDeriv(q1)
+                                      * math::eulerToMatrixZ(q2);
+          break;
+      case 2:
+          ret.topLeftCorner<3, 3>() = math::eulerToMatrixX(q0)
+                                      * math::eulerToMatrixY(q1)
+                                      * math::eulerToMatrixZDeriv(q2);
+          break;
+      default:
+          break;
+      }
+
+      break;
+  }
+  case AO_ZYX:
+  {
+      switch (_index)
+      {
+      case 0:
+          ret.topLeftCorner<3, 3>() = math::eulerToMatrixZDeriv(q0)
+                                      * math::eulerToMatrixY(q1)
+                                      * math::eulerToMatrixX(q2);
+          break;
+      case 1:
+          ret.topLeftCorner<3, 3>() = math::eulerToMatrixZ(q0)
+                                      * math::eulerToMatrixYDeriv(q1)
+                                      * math::eulerToMatrixX(q2);
+          break;
+      case 2:
+          ret.topLeftCorner<3, 3>() = math::eulerToMatrixZ(q0)
+                                      * math::eulerToMatrixY(q1)
+                                      * math::eulerToMatrixXDeriv(q2);
+          break;
+      default:
+          break;
+      }
+      break;
+  }
+  default:
+  {
+      dterr << "Undefined Euler axis order\n";
+      break;
+  }
+  }
+
+  return mT_ParentBodyToJoint.matrix()
+      * ret
+      * mT_ChildBodyToJoint.inverse().matrix();
+}
+
 void EulerJoint::updateJacobian() {
   double q0 = mCoordinate[0].getConfig();
   double q1 = mCoordinate[1].getConfig();

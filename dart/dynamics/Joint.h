@@ -183,6 +183,10 @@ public:
   /// \brief Get transformation from parent body node to child body node
   const Eigen::Isometry3d& getLocalTransform() const;
 
+  /// @brief Get derivative of local transformation w.r.t. _index-th
+  /// coordinate
+  virtual Eigen::Matrix4d getLocalTransformDeriv(int _index) const {}
+
   /// \brief Get generalized Jacobian from parent body node to child body node
   /// w.r.t. local generalized coordinate
   const math::Jacobian& getLocalJacobian() const;

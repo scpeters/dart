@@ -153,6 +153,14 @@ void JOINTS::kinematicsTest(Joint* _joint)
       Eigen::Matrix4d dTdq_eigen = (T_b_eigen - T_a_eigen) / q_delta;
       //Matrix4d dTdq_eigen = (T_b_eigen * T_a_eigen.inverse()) / dt;
 
+      Eigen::Matrix4d dTdqCorrect = _joint->getLocalTransformDeriv(i);
+
+      EXPECT_TRUE(equals(dTdq_eigen, dTdqCorrect));
+
+      std::cout << "dof: " << dof << std::endl;
+      std::cout << "dTdq_eigen:" << std::endl << dTdq_eigen << std::endl;
+      std::cout << "dTdqCorrect:" << std::endl << dTdqCorrect << std::endl;
+
       // J(i)
       Eigen::Matrix4d Ji_4x4matrix_eigen = Tinv_a_eigen * dTdq_eigen;
       Eigen::Vector6d Ji;
@@ -236,53 +244,53 @@ void JOINTS::kinematicsTest(Joint* _joint)
   }
 }
 
-// 0-dof joint
-TEST_F(JOINTS, WELD_JOINT)
-{
-  WeldJoint* weldJoint = new WeldJoint;
+//// 0-dof joint
+//TEST_F(JOINTS, WELD_JOINT)
+//{
+//  WeldJoint* weldJoint = new WeldJoint;
 
-  kinematicsTest(weldJoint);
-}
+//  kinematicsTest(weldJoint);
+//}
 
-// 1-dof joint
-TEST_F(JOINTS, REVOLUTE_JOINT)
-{
-  RevoluteJoint* revJoint = new RevoluteJoint;
+//// 1-dof joint
+//TEST_F(JOINTS, REVOLUTE_JOINT)
+//{
+//  RevoluteJoint* revJoint = new RevoluteJoint;
 
-  kinematicsTest(revJoint);
-}
+//  kinematicsTest(revJoint);
+//}
 
-// 1-dof joint
-TEST_F(JOINTS, PRISMATIC_JOINT)
-{
-  PrismaticJoint* priJoint = new PrismaticJoint;
+//// 1-dof joint
+//TEST_F(JOINTS, PRISMATIC_JOINT)
+//{
+//  PrismaticJoint* priJoint = new PrismaticJoint;
 
-  kinematicsTest(priJoint);
-}
+//  kinematicsTest(priJoint);
+//}
 
-// 1-dof joint
-TEST_F(JOINTS, SCREW_JOINT)
-{
-  ScrewJoint* screwJoint = new ScrewJoint;
+//// 1-dof joint
+//TEST_F(JOINTS, SCREW_JOINT)
+//{
+//  ScrewJoint* screwJoint = new ScrewJoint;
 
-  kinematicsTest(screwJoint);
-}
+//  kinematicsTest(screwJoint);
+//}
 
-// 2-dof joint
-TEST_F(JOINTS, UNIVERSAL_JOINT)
-{
-  UniversalJoint* univJoint = new UniversalJoint;
+//// 2-dof joint
+//TEST_F(JOINTS, UNIVERSAL_JOINT)
+//{
+//  UniversalJoint* univJoint = new UniversalJoint;
 
-  kinematicsTest(univJoint);
-}
+//  kinematicsTest(univJoint);
+//}
 
-// 3-dof joint
-TEST_F(JOINTS, BALL_JOINT)
-{
-  BallJoint* ballJoint = new BallJoint;
+//// 3-dof joint
+//TEST_F(JOINTS, BALL_JOINT)
+//{
+//  BallJoint* ballJoint = new BallJoint;
 
-  kinematicsTest(ballJoint);
-}
+//  kinematicsTest(ballJoint);
+//}
 
 // 3-dof joint
 TEST_F(JOINTS, EULER_JOINT)
@@ -298,100 +306,100 @@ TEST_F(JOINTS, EULER_JOINT)
   kinematicsTest(eulerJoint2);
 }
 
-// 3-dof joint
-TEST_F(JOINTS, TRANSLATIONAL_JOINT)
-{
-  TranslationalJoint* translationalJoint = new TranslationalJoint;
+////// 3-dof joint
+////TEST_F(JOINTS, TRANSLATIONAL_JOINT)
+////{
+////  TranslationalJoint* translationalJoint = new TranslationalJoint;
 
-  kinematicsTest(translationalJoint);
-}
+////  kinematicsTest(translationalJoint);
+////}
 
-// 3-dof joint
-TEST_F(JOINTS, PLANAR_JOINT)
-{
-  PlanarJoint* planarJoint = new PlanarJoint;
+////// 3-dof joint
+////TEST_F(JOINTS, PLANAR_JOINT)
+////{
+////  PlanarJoint* planarJoint = new PlanarJoint;
 
-  kinematicsTest(planarJoint);
-}
+////  kinematicsTest(planarJoint);
+////}
 
-// 6-dof joint
-TEST_F(JOINTS, FREE_JOINT)
-{
-  FreeJoint* freeJoint = new FreeJoint;
+////// 6-dof joint
+////TEST_F(JOINTS, FREE_JOINT)
+////{
+////  FreeJoint* freeJoint = new FreeJoint;
 
-  kinematicsTest(freeJoint);
-}
+////  kinematicsTest(freeJoint);
+////}
 
-//==============================================================================
-TEST_F(JOINTS, POSITION_LIMIT)
-{
-  double tol = 1e-3;
+////==============================================================================
+//TEST_F(JOINTS, POSITION_LIMIT)
+//{
+//  double tol = 1e-3;
 
-  simulation::World* myWorld
-      = utils::SkelParser::readSkelFile(
-          DART_DATA_PATH"/skel/test/joint_limit_test.skel");
-  EXPECT_TRUE(myWorld != NULL);
+//  simulation::World* myWorld
+//      = utils::SkelParser::readSkelFile(
+//          DART_DATA_PATH"/skel/test/joint_limit_test.skel");
+//  EXPECT_TRUE(myWorld != NULL);
 
-  myWorld->setGravity(Eigen::Vector3d(0.0, 0.0, 0.0));
+//  myWorld->setGravity(Eigen::Vector3d(0.0, 0.0, 0.0));
 
-  dynamics::Skeleton* pendulum = myWorld->getSkeleton("double_pendulum");
-  EXPECT_TRUE(pendulum != NULL);
+//  dynamics::Skeleton* pendulum = myWorld->getSkeleton("double_pendulum");
+//  EXPECT_TRUE(pendulum != NULL);
 
-  dynamics::Joint* joint0 = pendulum->getJoint("joint0");
-  dynamics::Joint* joint1 = pendulum->getJoint("joint1");
+//  dynamics::Joint* joint0 = pendulum->getJoint("joint0");
+//  dynamics::Joint* joint1 = pendulum->getJoint("joint1");
 
-  EXPECT_TRUE(joint0 != NULL);
-  EXPECT_TRUE(joint1 != NULL);
+//  EXPECT_TRUE(joint0 != NULL);
+//  EXPECT_TRUE(joint1 != NULL);
 
-  double limit0 = DART_PI / 6.0;
-  double limit1 = DART_PI / 6.0;
+//  double limit0 = DART_PI / 6.0;
+//  double limit1 = DART_PI / 6.0;
 
-  joint0->setPositionLimited(true);
-  joint0->getGenCoord(0)->setConfigMin(-limit0);
-  joint0->getGenCoord(0)->setConfigMax(limit0);
+//  joint0->setPositionLimited(true);
+//  joint0->getGenCoord(0)->setConfigMin(-limit0);
+//  joint0->getGenCoord(0)->setConfigMax(limit0);
 
-  joint1->setPositionLimited(true);
-  joint1->getGenCoord(0)->setConfigMin(-limit1);
-  joint1->getGenCoord(0)->setConfigMax(limit1);
+//  joint1->setPositionLimited(true);
+//  joint1->getGenCoord(0)->setConfigMin(-limit1);
+//  joint1->getGenCoord(0)->setConfigMax(limit1);
 
-  double simTime = 2.0;
-  double timeStep = myWorld->getTimeStep();
-  int nSteps = simTime / timeStep;
+//  double simTime = 2.0;
+//  double timeStep = myWorld->getTimeStep();
+//  int nSteps = simTime / timeStep;
 
-  // Two seconds with positive control forces
-  for (int i = 0; i < nSteps; i++)
-  {
-    joint0->getGenCoord(0)->setForce(0.1);
-    joint1->getGenCoord(0)->setForce(0.1);
-    myWorld->step();
+//  // Two seconds with positive control forces
+//  for (int i = 0; i < nSteps; i++)
+//  {
+//    joint0->getGenCoord(0)->setForce(0.1);
+//    joint1->getGenCoord(0)->setForce(0.1);
+//    myWorld->step();
 
-    double jointPos0 = joint0->getGenCoord(0)->getConfig();
-    double jointPos1 = joint1->getGenCoord(0)->getConfig();
+//    double jointPos0 = joint0->getGenCoord(0)->getConfig();
+//    double jointPos1 = joint1->getGenCoord(0)->getConfig();
 
-    EXPECT_GE(jointPos0, -limit0 - tol);
-    EXPECT_GE(jointPos1, -limit1 - tol);
+//    EXPECT_GE(jointPos0, -limit0 - tol);
+//    EXPECT_GE(jointPos1, -limit1 - tol);
 
-    EXPECT_LE(jointPos0, limit0 + tol);
-    EXPECT_LE(jointPos1, limit1 + tol);
-  }
+//    EXPECT_LE(jointPos0, limit0 + tol);
+//    EXPECT_LE(jointPos1, limit1 + tol);
+//  }
 
-  // Two more seconds with negative control forces
-  for (int i = 0; i < nSteps; i++)
-  {
-    joint0->getGenCoord(0)->setForce(-0.1);
-    joint1->getGenCoord(0)->setForce(-0.1);
-    myWorld->step();
+//  // Two more seconds with negative control forces
+//  for (int i = 0; i < nSteps; i++)
+//  {
+//    joint0->getGenCoord(0)->setForce(-0.1);
+//    joint1->getGenCoord(0)->setForce(-0.1);
+//    myWorld->step();
 
-    double jointPos0 = joint0->getGenCoord(0)->getConfig();
-    double jointPos1 = joint1->getGenCoord(0)->getConfig();
+//    double jointPos0 = joint0->getGenCoord(0)->getConfig();
+//    double jointPos1 = joint1->getGenCoord(0)->getConfig();
 
-    EXPECT_GE(jointPos0, -limit0 - tol);
-    EXPECT_GE(jointPos1, -limit1 - tol);
+//    EXPECT_GE(jointPos0, -limit0 - tol);
+//    EXPECT_GE(jointPos1, -limit1 - tol);
 
-    EXPECT_LE(jointPos0, limit0 + tol);
-    EXPECT_LE(jointPos1, limit1 + tol);
-  }
-}
+//    EXPECT_LE(jointPos0, limit0 + tol);
+//    EXPECT_LE(jointPos1, limit1 + tol);
+//  }
+//}
 
 //==============================================================================
 int main(int argc, char* argv[])
