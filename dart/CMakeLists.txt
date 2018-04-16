@@ -116,6 +116,8 @@ dart_add_core_headers(${dart_hpp})
 get_property(dart_core_headers GLOBAL PROPERTY DART_CORE_HEADERS)
 get_property(dart_core_sources GLOBAL PROPERTY DART_CORE_SOURCES)
 
+find_package(Bullet COMPONENTS BulletMath BulletCollision MODULE QUIET)
+
 # Add target
 dart_add_library(dart ${dart_core_headers} ${dart_core_sources})
 target_include_directories(
@@ -123,6 +125,7 @@ target_include_directories(
   PUBLIC
     ${EIGEN3_INCLUDE_DIRS}
     ${CCD_INCLUDE_DIRS}
+    ${BULLET_INCLUDE_DIRS}
     ${FCL_INCLUDE_DIRS}
     ${ASSIMP_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
@@ -132,6 +135,7 @@ target_link_libraries(
   PUBLIC
     ${CMAKE_DL_LIBS}
     ${CCD_LIBRARIES}
+    ${BULLET_LIBRARIES}
     ${FCL_LIBRARIES}
     ${ASSIMP_LIBRARIES}
     ${Boost_LIBRARIES}
