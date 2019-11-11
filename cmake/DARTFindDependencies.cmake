@@ -98,18 +98,11 @@ if(MSVC)
       "'https://github.com/OctoMap/octomap/pull/213' "
       "is resolved.")
   set(HAVE_OCTOMAP FALSE CACHE BOOL "Check if octomap found." FORCE)
-elseif(APPLE)
-  # Supporting Octomap on Windows is disabled for the following issue:
-  # https://github.com/OctoMap/octomap/pull/213
-  message(WARNING "Octomap ${octomap_VERSION} is found, but Octomap "
-      "is not supported on macOS until "
-      "'https://github.com/dartsim/dart/issues/1078' is resolved.")
-  set(HAVE_OCTOMAP FALSE CACHE BOOL "Check if octomap found." FORCE)
 else()
   if(OCTOMAP_FOUND OR octomap_FOUND)
     if(NOT DEFINED octomap_VERSION)
       set(HAVE_OCTOMAP FALSE CACHE BOOL "Check if octomap found." FORCE)
-      message(STATUS "Looking for octomap - octomap_VERSION is not defined, "
+      message(WARNING "Looking for octomap - octomap_VERSION is not defined, "
           "please install octomap with version information"
       )
     else()
@@ -120,7 +113,7 @@ else()
     endif()
   else()
     set(HAVE_OCTOMAP FALSE CACHE BOOL "Check if octomap found." FORCE)
-    message(STATUS "Looking for octomap - NOT found, to use VoxelGridShape, "
+    message(WARNING "Looking for octomap - NOT found, to use VoxelGridShape, "
         "please install octomap"
     )
   endif()
@@ -136,7 +129,7 @@ if(DART_VERBOSE)
   if("${PERLMODULES_FOUND}" STREQUAL "TRUE")
     message(STATUS "Looking for PerlModules - found")
   else()
-    message(STATUS "Looking for PerlModules - NOT found, to colorize gcc messages, please install Regexp::Common Getopt::ArgvFile Getopt::Long Term::ANSIColor (http://www.cpan.org/modules/INSTALL.html)")
+    message(WARNING "Looking for PerlModules - NOT found, to colorize gcc messages, please install Regexp::Common Getopt::ArgvFile Getopt::Long Term::ANSIColor (http://www.cpan.org/modules/INSTALL.html)")
   endif()
 endif()
 
