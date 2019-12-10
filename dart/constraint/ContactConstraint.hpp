@@ -56,6 +56,12 @@ public:
   /// Destructor
   ~ContactConstraint() override = default;
 
+  // Documentation inherited
+  const std::string& getType() const override;
+
+  /// Returns constraint type for this class.
+  static const std::string& getStaticType();
+
   //----------------------------------------------------------------------------
   // Property settings
   //----------------------------------------------------------------------------
@@ -134,6 +140,8 @@ protected:
 
   static double computeFrictionCoefficient(
       const dynamics::ShapeNode* shapeNode);
+  static double computePrimaryFrictionCoefficient(
+      const dynamics::ShapeNode* shapeNode);
   static double computeSecondaryFrictionCoefficient(
       const dynamics::ShapeNode* shapeNode);
   static double computeSlipCompliance(
@@ -176,7 +184,7 @@ private:
   Eigen::Vector3d mFirstFrictionalDirection;
 
   /// Primary Coefficient of Friction
-  double mFrictionCoeff;
+  double mPrimaryFrictionCoeff;
 
   /// Primary Coefficient of Friction
   double mSecondaryFrictionCoeff;
