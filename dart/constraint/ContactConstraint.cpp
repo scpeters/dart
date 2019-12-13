@@ -67,7 +67,7 @@ constexpr double DART_DEFAULT_FRICTION_COEFF = 1.0;
 constexpr double DART_DEFAULT_RESTITUTION_COEFF = 0.0;
 // slip compliance is combined through addition,
 // so set to half the global default value
-constexpr double DART_DEFAULT_SLIP_COMPLIANCE = 0.5*DART_CFM;
+constexpr double DART_DEFAULT_SLIP_COMPLIANCE = 0.5 * DART_CFM;
 const Eigen::Vector3d DART_DEFAULT_FRICTION_DIR = Eigen::Vector3d::UnitZ();
 
 //==============================================================================
@@ -87,7 +87,7 @@ ContactConstraint::ContactConstraint(
                    .get()),
     mContact(contact),
     mFirstFrictionalDirection(DART_DEFAULT_FRICTION_DIR),
-    mSlipCompliance(DART_DEFAULT_SLIP_COMPLIANCE),
+    mPrimarySlipCompliance(DART_DEFAULT_SLIP_COMPLIANCE),
     mSecondarySlipCompliance(DART_DEFAULT_SLIP_COMPLIANCE),
     mIsFrictionOn(true),
     mAppliedImpulseIndex(dynamics::INVALID_INDEX),
@@ -142,16 +142,18 @@ ContactConstraint::ContactConstraint(
     mIsFrictionOn = true;
 
     // Compute slip compliance
-    const double slipComplianceA = computeSlipCompliance(shapeNodeA);
-    const double slipComplianceB = computeSlipCompliance(shapeNodeB);
-    const double secondarySlipComplianceA =
-                         computeSecondarySlipCompliance(shapeNodeA);
-    const double secondarySlipComplianceB =
-                         computeSecondarySlipCompliance(shapeNodeB);
+    const double primarySlipComplianceA
+        = computePrimarySlipCompliance(shapeNodeA);
+    const double primarySlipComplianceB
+        = computePrimarySlipCompliance(shapeNodeB);
+    const double secondarySlipComplianceA
+        = computeSecondarySlipCompliance(shapeNodeA);
+    const double secondarySlipComplianceB
+        = computeSecondarySlipCompliance(shapeNodeB);
     // Combine slip compliances through addition
-    mSlipCompliance = slipComplianceA + slipComplianceB;
-    mSecondarySlipCompliance =
-        secondarySlipComplianceA + secondarySlipComplianceB;
+    mPrimarySlipCompliance = primarySlipComplianceA + primarySlipComplianceB;
+    mSecondarySlipCompliance
+        = secondarySlipComplianceA + secondarySlipComplianceB;
 
     // Check shapeNodes for valid friction direction unit vectors
     auto frictionDirA = computeWorldFirstFrictionDir(shapeNodeA);
@@ -648,7 +650,7 @@ void ContactConstraint::getVelocityChange(double* vel, bool withCfm)
         vel[0] += vel[0] * mConstraintForceMixing;
         break;
       case 1:
-        vel[1] += vel[1] * (mSlipCompliance / mTimeStep);
+        vel[1] += vel[1] * (mPrimarySlipCompliance / mTimeStep);
         break;
       case 2:
         vel[2] += vel[2] * (mSecondarySlipCompliance / mTimeStep);
@@ -818,7 +820,7 @@ double ContactConstraint::computeSecondaryFrictionCoefficient(
 }
 
 //==============================================================================
-double ContactConstraint::computeSlipCompliance(
+double ContactConstraint::computePrimarySlipCompliance(
     const dynamics::ShapeNode* shapeNode)
 {
   assert(shapeNode);

@@ -144,7 +144,7 @@ protected:
       const dynamics::ShapeNode* shapeNode);
   static double computeSecondaryFrictionCoefficient(
       const dynamics::ShapeNode* shapeNode);
-  static double computeSlipCompliance(
+  static double computePrimarySlipCompliance(
       const dynamics::ShapeNode* shapeNode);
   static double computeSecondarySlipCompliance(
       const dynamics::ShapeNode* shapeNode);
@@ -190,7 +190,7 @@ private:
   double mSecondaryFrictionCoeff;
 
   /// Primary Coefficient of Slip Compliance
-  double mSlipCompliance;
+  double mPrimarySlipCompliance;
 
   /// Secondary Coefficient of Slip Compliance
   double mSecondarySlipCompliance;
