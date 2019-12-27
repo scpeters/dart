@@ -843,6 +843,8 @@ double ContactConstraint::computePrimarySlipCompliance(
   }
   else if (slipCompliance < 1e-9)
   {
+    // Clamp slip compliance parameter if it is out of range
+    // Threshold copied from setConstraintForceMixing
     return 1e-9;
   }
   return slipCompliance;
@@ -873,6 +875,8 @@ double ContactConstraint::computeSecondarySlipCompliance(
   }
   else if (slipCompliance < 1e-9)
   {
+    // Clamp slip compliance parameter if it is out of range
+    // Threshold copied from setConstraintForceMixing
     return 1e-9;
   }
   return slipCompliance;
