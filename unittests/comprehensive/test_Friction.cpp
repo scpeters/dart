@@ -262,6 +262,10 @@ TEST(Friction, FrictionPerShapeNode)
       const auto y1 = body1->getTransform().translation()[1];
       EXPECT_NEAR(x1, -0.5, 0.00001);
       EXPECT_NEAR(y1, -0.17889, 0.001);
+      const auto vx1 = body1->getCOMLinearVelocity()[0];
+      const auto vy1 = body1->getCOMLinearVelocity()[1];
+      EXPECT_NEAR(vx1, 0.0, 0.00001);
+      EXPECT_NEAR(vy1, 0.0, 0.00001);
 
       // The second box still moves even after landing on the ground because its
       // friction is zero.
@@ -269,6 +273,10 @@ TEST(Friction, FrictionPerShapeNode)
       const auto y2 = body2->getTransform().translation()[1];
       EXPECT_NEAR(x2, 0.5, 0.00001);
       EXPECT_LE(y2, -0.17889);
+      const auto vx2 = body2->getCOMLinearVelocity()[0];
+      const auto vy2 = body2->getCOMLinearVelocity()[1];
+      EXPECT_NEAR(vx2, 0.0, 0.00001);
+      EXPECT_LT(vy2, -1.5);
 
       // The third box still moves even after landing on the ground because its
       // friction is zero along the first friction direction.
@@ -276,6 +284,10 @@ TEST(Friction, FrictionPerShapeNode)
       const auto y3 = body3->getTransform().translation()[1];
       EXPECT_GE(x3, 1.5249);
       EXPECT_LE(y3, -0.20382);
+      const auto vx3 = body3->getCOMLinearVelocity()[0];
+      const auto vy3 = body3->getCOMLinearVelocity()[1];
+      EXPECT_NEAR(vx3, -vy3, 0.001);
+      EXPECT_LT(vy3, -0.75);
 
       // The fourth box still moves even after landing on the ground because its
       // friction is zero along the first friction direction.
@@ -283,6 +295,10 @@ TEST(Friction, FrictionPerShapeNode)
       const auto y4 = body4->getTransform().translation()[1];
       EXPECT_LE(x4, -1.5249);
       EXPECT_LE(y4, -0.20382);
+      const auto vx4 = body4->getCOMLinearVelocity()[0];
+      const auto vy4 = body4->getCOMLinearVelocity()[1];
+      EXPECT_NEAR(vx4, vy4, 0.001);
+      EXPECT_LT(vy4, -0.75);
     }
   }
 }
