@@ -51,7 +51,7 @@ dynamics::SkeletonPtr createFloor()
       = floor->createJointAndBodyNodePair<dynamics::WeldJoint>(nullptr).second;
 
   // Give the body a shape
-  double floorWidth = 10.0;
+  double floorWidth = 100.0;
   double floorHeight = 0.01;
   auto box = std::make_shared<dynamics::BoxShape>(
       Eigen::Vector3d(floorWidth, floorWidth, floorHeight));
@@ -277,6 +277,282 @@ TEST(Friction, FrictionPerShapeNode)
       const auto vy2 = body2->getCOMLinearVelocity()[1];
       EXPECT_NEAR(vx2, 0.0, 0.00001);
       EXPECT_LT(vy2, -1.5);
+
+      // The third box still moves even after landing on the ground because its
+      // friction is zero along the first friction direction.
+      const auto x3 = body3->getTransform().translation()[0];
+      const auto y3 = body3->getTransform().translation()[1];
+      EXPECT_GE(x3, 1.5249);
+      EXPECT_LE(y3, -0.20382);
+      const auto vx3 = body3->getCOMLinearVelocity()[0];
+      const auto vy3 = body3->getCOMLinearVelocity()[1];
+      EXPECT_NEAR(vx3, -vy3, 0.001);
+      EXPECT_LT(vy3, -0.75);
+
+      // The fourth box still moves even after landing on the ground because its
+      // friction is zero along the first friction direction.
+      const auto x4 = body4->getTransform().translation()[0];
+      const auto y4 = body4->getTransform().translation()[1];
+      EXPECT_LE(x4, -1.5249);
+      EXPECT_LE(y4, -0.20382);
+      const auto vx4 = body4->getCOMLinearVelocity()[0];
+      const auto vy4 = body4->getCOMLinearVelocity()[1];
+      EXPECT_NEAR(vx4, vy4, 0.001);
+      EXPECT_LT(vy4, -0.75);
+    }
+  }
+}
+
+//==============================================================================
+TEST(Friction, SlipPerShapeNode)
+{
+  auto skeleton1
+      = createBox(Eigen::Vector3d(0.3, 0.3, 0.3), Eigen::Vector3d(-0.5, 0, 0));
+  skeleton1->setName("Skeleton1");
+  auto skeleton2
+      = createBox(Eigen::Vector3d(0.3, 0.3, 0.3), Eigen::Vector3d(+0.5, 0, 0));
+  skeleton2->setName("Skeleton2");
+  auto skeleton3 = createBox(
+      Eigen::Vector3d(0.3, 0.3, 0.3),
+      Eigen::Vector3d(+1.5, 0, 0),
+      Eigen::Vector3d(0, 0, 0.7853981633974483));
+  skeleton3->setName("Skeleton3");
+  auto skeleton4 = createBox(
+      Eigen::Vector3d(0.3, 0.3, 0.3),
+      Eigen::Vector3d(-1.5, 0, 0),
+      Eigen::Vector3d(0, 0, 0.7853981633974483));
+  skeleton4->setName("Skeleton4");
+
+  auto body1 = skeleton1->getRootBodyNode();
+  // default friction and slip values
+  EXPECT_DOUBLE_EQ(
+      1.0, body1->getShapeNode(0)->getDynamicsAspect()->getFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body1->getShapeNode(0)->getDynamicsAspect()->getPrimaryFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body1->getShapeNode(0)->getDynamicsAspect()->getSecondaryFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      -1, body1->getShapeNode(0)->getDynamicsAspect()->getSlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      -1,
+      body1->getShapeNode(0)->getDynamicsAspect()->getPrimarySlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      -1,
+      body1->getShapeNode(0)->getDynamicsAspect()->getSecondarySlipCompliance());
+  // test setting primary slip compliance
+  body1->getShapeNode(0)->getDynamicsAspect()->setPrimarySlipCompliance(1.0);
+  EXPECT_DOUBLE_EQ(
+      0.0, body1->getShapeNode(0)->getDynamicsAspect()->getSlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body1->getShapeNode(0)->getDynamicsAspect()->getPrimarySlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      -1,
+      body1->getShapeNode(0)->getDynamicsAspect()->getSecondarySlipCompliance());
+  // test setting all slip compliances to 0
+  body1->getShapeNode(0)->getDynamicsAspect()->setSlipCompliance(0);
+  EXPECT_DOUBLE_EQ(
+      0.0, body1->getShapeNode(0)->getDynamicsAspect()->getSlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      0.0,
+      body1->getShapeNode(0)->getDynamicsAspect()->getPrimarySlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      0.0,
+      body1->getShapeNode(0)->getDynamicsAspect()->getSecondarySlipCompliance());
+  // set secondary slip compliance to 0.1
+  body1->getShapeNode(0)->getDynamicsAspect()->setSecondarySlipCompliance(0.1);
+  EXPECT_DOUBLE_EQ(
+      0.05, body1->getShapeNode(0)->getDynamicsAspect()->getSlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      0.0,
+      body1->getShapeNode(0)->getDynamicsAspect()->getPrimarySlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      0.1,
+      body1->getShapeNode(0)->getDynamicsAspect()->getSecondarySlipCompliance());
+
+  auto body2 = skeleton2->getRootBodyNode();
+  // default friction and slip values
+  EXPECT_DOUBLE_EQ(
+      1.0, body2->getShapeNode(0)->getDynamicsAspect()->getFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body2->getShapeNode(0)->getDynamicsAspect()->getPrimaryFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body2->getShapeNode(0)->getDynamicsAspect()->getSecondaryFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      -1, body2->getShapeNode(0)->getDynamicsAspect()->getSlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      -1,
+      body2->getShapeNode(0)->getDynamicsAspect()->getPrimarySlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      -1,
+      body2->getShapeNode(0)->getDynamicsAspect()->getSecondarySlipCompliance());
+  // set only secondary slip compliance
+  body2->getShapeNode(0)->getDynamicsAspect()->setSecondarySlipCompliance(1.0);
+  EXPECT_DOUBLE_EQ(
+      0.0, body2->getShapeNode(0)->getDynamicsAspect()->getSlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      -1,
+      body2->getShapeNode(0)->getDynamicsAspect()->getPrimarySlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body2->getShapeNode(0)->getDynamicsAspect()->getSecondarySlipCompliance());
+
+  auto body3 = skeleton3->getRootBodyNode();
+  // default friction and slip values
+  EXPECT_DOUBLE_EQ(
+      1.0, body3->getShapeNode(0)->getDynamicsAspect()->getFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body3->getShapeNode(0)->getDynamicsAspect()->getPrimaryFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body3->getShapeNode(0)->getDynamicsAspect()->getSecondaryFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      0.0,
+      body3->getShapeNode(0)
+          ->getDynamicsAspect()
+          ->getFirstFrictionDirection()
+          .squaredNorm());
+  EXPECT_EQ(
+      nullptr,
+      body3->getShapeNode(0)
+          ->getDynamicsAspect()
+          ->getFirstFrictionDirectionFrame());
+  EXPECT_DOUBLE_EQ(
+      -1, body3->getShapeNode(0)->getDynamicsAspect()->getSlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      -1,
+      body3->getShapeNode(0)->getDynamicsAspect()->getPrimarySlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      -1,
+      body3->getShapeNode(0)->getDynamicsAspect()->getSecondarySlipCompliance());
+  // this body is rotated by 45 degrees, so set friction direction in body frame
+  // along Y axis so that gravity pushes it in x and y
+  body3->getShapeNode(0)->getDynamicsAspect()->setPrimaryFrictionCoeff(0.0);
+  body3->getShapeNode(0)->getDynamicsAspect()->setFirstFrictionDirection(
+      Eigen::Vector3d(0, 1, 0));
+  // check friction values
+  EXPECT_DOUBLE_EQ(
+      0.5, body3->getShapeNode(0)->getDynamicsAspect()->getFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      0.0,
+      body3->getShapeNode(0)->getDynamicsAspect()->getPrimaryFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body3->getShapeNode(0)->getDynamicsAspect()->getSecondaryFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body3->getShapeNode(0)
+          ->getDynamicsAspect()
+          ->getFirstFrictionDirection()
+          .squaredNorm());
+  EXPECT_EQ(
+      nullptr,
+      body3->getShapeNode(0)
+          ->getDynamicsAspect()
+          ->getFirstFrictionDirectionFrame());
+
+  auto body4 = skeleton4->getRootBodyNode();
+  // default friction and slip values
+  EXPECT_DOUBLE_EQ(
+      1.0, body4->getShapeNode(0)->getDynamicsAspect()->getFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body4->getShapeNode(0)->getDynamicsAspect()->getPrimaryFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body4->getShapeNode(0)->getDynamicsAspect()->getSecondaryFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      0.0,
+      body4->getShapeNode(0)
+          ->getDynamicsAspect()
+          ->getFirstFrictionDirection()
+          .squaredNorm());
+  EXPECT_EQ(
+      nullptr,
+      body4->getShapeNode(0)
+          ->getDynamicsAspect()
+          ->getFirstFrictionDirectionFrame());
+  EXPECT_DOUBLE_EQ(
+      -1, body4->getShapeNode(0)->getDynamicsAspect()->getSlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      -1,
+      body4->getShapeNode(0)->getDynamicsAspect()->getPrimarySlipCompliance());
+  EXPECT_DOUBLE_EQ(
+      -1,
+      body4->getShapeNode(0)->getDynamicsAspect()->getSecondarySlipCompliance());
+  // this body is rotated by 45 degrees, but set friction direction according to
+  // world frame so that the body orientation doesn't matter. thus a diagonal
+  // axis is needed to push it in x and y
+  body4->getShapeNode(0)->getDynamicsAspect()->setPrimaryFrictionCoeff(0.0);
+  body4->getShapeNode(0)->getDynamicsAspect()->setFirstFrictionDirectionFrame(
+      Frame::World());
+  body4->getShapeNode(0)->getDynamicsAspect()->setFirstFrictionDirection(
+      Eigen::Vector3d(0.5 * std::sqrt(2), 0.5 * std::sqrt(2), 0));
+  // check friction values
+  EXPECT_DOUBLE_EQ(
+      0.5, body4->getShapeNode(0)->getDynamicsAspect()->getFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      0.0,
+      body4->getShapeNode(0)->getDynamicsAspect()->getPrimaryFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body4->getShapeNode(0)->getDynamicsAspect()->getSecondaryFrictionCoeff());
+  EXPECT_DOUBLE_EQ(
+      1.0,
+      body4->getShapeNode(0)
+          ->getDynamicsAspect()
+          ->getFirstFrictionDirection()
+          .squaredNorm());
+  EXPECT_EQ(
+      Frame::World(),
+      body4->getShapeNode(0)
+          ->getDynamicsAspect()
+          ->getFirstFrictionDirectionFrame());
+
+  // Create a world and add the rigid body
+  auto world = simulation::World::create();
+  EXPECT_TRUE(equals(world->getGravity(), ::Eigen::Vector3d(0, 0, -9.81)));
+  world->setGravity(Eigen::Vector3d(0.0, -5.0, -9.81));
+  EXPECT_TRUE(equals(world->getGravity(), ::Eigen::Vector3d(0.0, -5.0, -9.81)));
+
+  world->addSkeleton(createFloor());
+  world->addSkeleton(skeleton1);
+  world->addSkeleton(skeleton2);
+  world->addSkeleton(skeleton3);
+  world->addSkeleton(skeleton4);
+
+  const auto numSteps = 2500;
+  for (auto i = 0u; i < numSteps; ++i)
+  {
+    world->step();
+
+    // Wait until the first box settle-in on the ground
+    if (i > 2300)
+    {
+      const auto x1 = body1->getTransform().translation()[0];
+      const auto y1 = body1->getTransform().translation()[1];
+      EXPECT_NEAR(x1, -0.5, 0.0001);
+      EXPECT_LE(y1, -0.17889);
+      const auto vx1 = body1->getCOMLinearVelocity()[0];
+      const auto vy1 = body1->getCOMLinearVelocity()[1];
+      EXPECT_NEAR(vx1, 0.0, 4e-5);
+      EXPECT_NEAR(vy1, -0.1306, 1e-4);
+
+      // The second box still moves even after landing on the ground because its
+      // friction is zero.
+      const auto x2 = body2->getTransform().translation()[0];
+      const auto y2 = body2->getTransform().translation()[1];
+      EXPECT_NEAR(x2, 0.5, 0.00001);
+      EXPECT_LE(y2, -0.17889);
+      const auto vx2 = body2->getCOMLinearVelocity()[0];
+      const auto vy2 = body2->getCOMLinearVelocity()[1];
+      EXPECT_NEAR(vx2, 0.0, 0.00001);
+      EXPECT_NEAR(vy2, -1.28, 0.02);
 
       // The third box still moves even after landing on the ground because its
       // friction is zero along the first friction direction.
